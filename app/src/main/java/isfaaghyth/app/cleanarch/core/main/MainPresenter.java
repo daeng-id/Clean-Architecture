@@ -17,18 +17,15 @@ class MainPresenter extends BasePresenter<MainView> {
     }
 
     void getHome() {
-        subscribe(service.getHome()
+        view().showLoading();
+        subscribe(service().getHome()
                 .compose(new MainScheduler<>())
                 .subscribe(res -> {
-                    view.onSuccess(res);
+                    view().hideLoading();
+                    view().onSuccess(res);
                 }, err -> {
-                    view.onError(err.getMessage());
-                }, () -> {
-                    dettachView();
-                }, disposable -> {
-                    if (disposable.isDisposed()) {
-                        Log.d("TAG", "masih di pake");
-                    }
+                    view().hideLoading();
+                    handleError(err);
                 })
         );
     }
